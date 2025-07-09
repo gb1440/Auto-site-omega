@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const apiKeyInput = document.getElementById('apiKeyInput');
     const enterPanelButton = document.getElementById('enterPanelButton');
     const saveLoginCredentialsButton = document.getElementById('saveLoginCredentialsButton');
-    const clearCredentialsButton = document.getElementById('clearCredentials');
+    
 
     // Filtros e Botões do Painel
     const sheetSelector = document.getElementById('sheetSelector');
@@ -202,31 +202,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function clearCredentialsAndLogout() {
-        localStorage.removeItem('spreadsheetId');
-        localStorage.removeItem('apiKey');
-        spreadsheetIdInput.value = '';
-        apiKeyInput.value = '';
-        allAppointments = [];
-        sheetSelector.innerHTML = '';
-        filterProfessionalSelect.innerHTML = '<option value="">Todos os Profissionais</option>';
-        filterProcedureSelect.innerHTML = '<option value="">Todos os Atendimentos</option>';
-        showLoginScreen();
-    }
+    
 
     // --- EVENT LISTENERS ---
 
-    enterPanelButton.addEventListener('click', showMainPanel);
+    enterPanelButton.addEventListener('click', () => { saveCredentials(); showMainPanel(); });
     saveLoginCredentialsButton.addEventListener('click', saveCredentials);
-    clearCredentialsButton.addEventListener('click', () => {
-        clearCredentialsAndLogout();
-        alert('Credenciais limpas!');
-    });
+    
 
     sheetSelector.addEventListener('change', fetchAndProcessAppointments); // Alterado para usar a nova função
     reloadDataButton.addEventListener('click', fetchAndProcessAppointments); // Alterado para usar a nova função
     saveCredentialsButton.addEventListener('click', saveCredentials);
-    logoutButton.addEventListener('click', clearCredentialsAndLogout); // Botão Sair
+    logoutButton.addEventListener('click', showLoginScreen); // Botão Sair
 
     [searchPatientInput, filterDateInput].forEach(el => el.addEventListener('input', applyFilters));
     [filterProfessionalSelect, filterProcedureSelect, filterPaidCheckbox].forEach(el => el.addEventListener('change', applyFilters));

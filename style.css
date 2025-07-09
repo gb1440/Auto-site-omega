@@ -45,14 +45,14 @@
             }
         }
         .btn-primary {
-            background-color: #d8b4fe; /* Lilás */
+            background-color: #f472b6; /* Rosa */
             color: white;
             border-radius: 8px;
             padding: 10px 20px;
             transition: background-color 0.2s;
         }
         .btn-primary:hover {
-            background-color: #c084fc; /* Lilás mais escuro */
+            background-color: #ec4899; /* Rosa mais escuro */
         }
         .input-field {
             border-radius: 8px;
@@ -324,6 +324,33 @@
 
 .card .h-10.w-10:hover {
     background-color: #e0e0e0; /* Fundo cinza mais escuro no hover */
+}
+
+/* Estilos específicos para o botão de telefone */
+.card a.text-purple-500 {
+    background-color: #e9d5ff; /* Lilás claro */
+}
+
+.card a.text-purple-500:hover {
+    background-color: #d8b4fe; /* Lilás um pouco mais escuro */
+}
+
+/* Estilos específicos para o botão do WhatsApp */
+.card a.text-green-500 {
+    background-color: #d1fae5; /* Verde claro */
+}
+
+.card a.text-green-500:hover {
+    background-color: #a7f3d0; /* Verde um pouco mais escuro */
+}
+
+/* Garante que os ícones mantenham suas cores */
+.card a.text-purple-500 i {
+    color: #a78bfa; /* Roxo principal */
+}
+
+.card a.text-green-500 i {
+    color: #10B981; /* Verde principal */
 }
 
 /* Estilo para o texto do logo no cabeçalho */
