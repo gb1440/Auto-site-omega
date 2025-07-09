@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterPaidCheckbox = document.getElementById('filterPaidCheckbox');
     const toggleFiltersButton = document.getElementById('toggleFiltersButton');
     const filterContainer = document.getElementById('filterContainer');
-    const clearFiltersButton = document.getElementById('clearCredentials'); // Botão Sair
+    const logoutButton = document.getElementById('logoutButton');
     const toggleViewButton = document.getElementById('toggleViewButton');
     const reloadDataButton = document.getElementById('reloadData');
     const saveCredentialsButton = document.getElementById('saveCredentials');
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
     sheetSelector.addEventListener('change', fetchAndProcessAppointments); // Alterado para usar a nova função
     reloadDataButton.addEventListener('click', fetchAndProcessAppointments); // Alterado para usar a nova função
     saveCredentialsButton.addEventListener('click', saveCredentials);
-    clearFiltersButton.addEventListener('click', clearCredentialsAndLogout); // Botão Sair
+    logoutButton.addEventListener('click', clearCredentialsAndLogout); // Botão Sair
 
     [searchPatientInput, filterDateInput].forEach(el => el.addEventListener('input', applyFilters));
     [filterProfessionalSelect, filterProcedureSelect, filterPaidCheckbox].forEach(el => el.addEventListener('change', applyFilters));
