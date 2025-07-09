@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PainelEstética - Agendamentos</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=1.1">
+</head>
+<body class="antialiased">
+
+    <!-- Tela de Login -->
+    <div id="loginScreen" class="screen login-container">
+        <div class="login-box">
+            <img src="https://img.icons8.com/ios-filled/100/000000/spa-flower.png" alt="Spa Icon" class="mx-auto mb-4 w-24 h-24 text-purple-main">
+            <h1 class="text-4xl font-semibold text-purple-main mb-2">PainelEstética</h1>
+            <p class="text-gray-600 mb-8">Gerencie seus agendamentos de forma eficiente e intuitiva.</p>
+            <div class="space-y-4 mb-6">
+                <input type="text" id="spreadsheetIdInput" placeholder="ID da Planilha" class="input-field">
+                <input type="text" id="apiKeyInput" placeholder="Chave da API" class="input-field">
+            </div>
+            <button id="enterPanelButton" class="btn-primary w-full mb-4">Entrar no Painel</button>
+            <button id="saveLoginCredentialsButton" class="btn-primary w-full mb-2">Salvar Credenciais</button>
+            <button id="clearCredentials" class="btn-primary w-full">Limpar Credenciais</button>
+        </div>
+    </div>
+
+    <!-- Tela Principal do Painel -->
+    <div id="mainPanelScreen" class="screen">
+        <header class="header-bg p-4 shadow-md">
+            <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+                <h1 id="logoTitle" class="text-3xl font-semibold text-purple-main mb-4 md:mb-0 cursor-pointer">PainelEstética</h1>
+                <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full md:w-auto">
+                    <button id="toggleFiltersButton" class="md:hidden btn-primary mb-4">Mostrar/Esconder Filtros</button>
+                <div id="filterContainer" class="hidden md:flex flex-col lg:flex-row items-center justify-between gap-4 w-full">
+                    <div class="filtro-container">
+                        <div class="campo">
+                            <label for="sheetSelector">Página/Aba</label>
+                            <select id="sheetSelector"></select>
+                        </div>
+
+                        <div class="campo">
+                            <label for="filterProfessional">‍⚕️ Profissional</label>
+                            <select id="filterProfessional">
+                                <option value="">Todos os Profissionais</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label for="filterDate"> Data</label>
+                            <input type="date" id="filterDate" />
+                        </div>
+
+                        <div class="campo">
+                            <label for="filterProcedure"> Status</label>
+                            <select id="filterProcedure">
+                                <option value="">Todos os Status</option>
+                                <option value="pago">Pago</option>
+                                <option value="pendente">Pendente</option>
+                                <option value="atendido">Atendido</option>
+                            </select>
+                        </div>
+
+                        <div class="campo toggle">
+                            <input type="checkbox" id="filterPaidCheckbox" />
+                            <label for="apenasPagos">✅ Apenas Pagos</label>
+                        </div>
+
+                        <div class="campo full">
+                            <input type="text" id="searchPatient" placeholder=" Buscar por nome ou telefone..." />
+                        </div>
+                    </div>
+
+                    <!-- Grupo de Botões de Ação -->
+                    <div class="flex items-center gap-2 w-full lg:w-auto justify-center lg:justify-end">
+                        <button id="saveCredentials" class="btn-primary tooltip" data-tooltip="Salvar Credenciais">
+                            <i class="fas fa-save"></i>
+                        </button>
+                        <button id="reloadData" class="btn-primary tooltip" data-tooltip="Recarregar Dados">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button id="clearFilters" class="btn-primary tooltip" data-tooltip="Sair">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                        <button id="toggleViewButton" class="btn-primary tooltip" data-tooltip="Ver Calendário">
+                            <i class="fas fa-calendar-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto p-4 mt-8">
+            <div id="appointmentsContainer" class="grid grid-cols-1 gap-6">
+                <!-- Agendamentos serão carregados aqui via JS -->
+            </div>
+            <div id="calendarContainer" class="hidden"></div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,167 @@
+.status-paid {
+            background-color: #10B981; /* Verde */
+            color: white;
+        }
+        .status-pending {
+            background-color: #F59E0B; /* Laranja */
+            color: white;
+        }
+        .text-client-name {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            color: #4B5563; /* Um cinza mais escuro */
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fdf4f8; /* Rosa claro de fundo */
+            overflow: hidden; /* Impede a rolagem da página principal */
+        }
+        .header-bg {
+            background-color: #fbcfe8; /* Rosa mais escuro para o cabeçalho */
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .btn-primary {
+            background-color: #d8b4fe; /* Lilás */
+            color: white;
+            border-radius: 8px;
+            padding: 10px 20px;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #c084fc; /* Lilás mais escuro */
+        }
+        .input-field {
+            border-radius: 8px;
+            border: 1px solid #fbcfe8;
+            padding: 10px 15px;
+            width: 100%;
+        }
+        .text-purple-main {
+            color: #a78bfa; /* Roxo principal */
+        }
+        .text-pink-accent {
+            color: #f472b6; /* Rosa acentuado */
+        }
+        /* Estilos para as telas */
+        .screen {
+            display: none; /* Oculta todas as telas por padrão */
+            position: fixed; /* Posiciona as telas de forma absoluta na viewport */
+            inset: 0; /* Ocupa toda a largura e altura da viewport */
+            overflow: auto; /* Permite rolagem interna se o conteúdo for maior que a tela */
+        }
+        #mainPanelScreen {
+            flex-direction: column;
+            z-index: 5; /* Z-index menor que o da tela de login */
+        }
+        body.no-scroll {
+            overflow: hidden;
+        }
+        .login-container {
+            flex-direction: column; /* Alinha itens em coluna */
+            justify-content: center;
+            align-items: center;
+            background-color: #fdf4f8; /* Rosa claro de fundo */
+            padding: 20px; /* Adiciona um padding geral */
+            z-index: 9999; /* Garante que a tela de login esteja sempre no topo */
+        }
+        .login-box {
+            background-color: #ffffff;
+            padding: 50px; /* Mais padding */
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 450px; /* Aumenta um pouco a largura máxima */
+            width: 100%; /* Garante que ocupe a largura disponível */
+            margin: 0 auto; /* Centraliza horizontalmente */
+        }
+
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip:before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px;
+            border-radius: 5px;
+            background: #333;
+            color: white;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            z-index: 10; /* Ensure tooltip is on top */
+        }
+
+        .tooltip:hover:before {
+            opacity: 1;
+            visibility: visible;
+        }
+
+.filtro-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px;
+  background: #fcdff1;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  font-family: "Poppins", sans-serif;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 200px;
+  min-width: 180px;
+}
+
+.campo label {
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #6b4b8b;
+}
+
+.campo input,
+.campo select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+.campo input:focus,
+.campo select:focus {
+  border-color: #a66bff;
+}
+
+.campo.toggle {
+  align-self: center;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.campo.full {
+  flex: 1 1 100%;
+}
