@@ -7,9 +7,14 @@
             color: white;
         }
         .text-client-name {
-            font-size: 1.25rem; /* text-xl */
+            font-size: 1.1rem; /* Ajustado para mobile */
             font-weight: 600; /* font-semibold */
             color: #4B5563; /* Um cinza mais escuro */
+        }
+        @media (min-width: 768px) {
+            .text-client-name {
+                font-size: 1.25rem; /* Voltar ao original para desktop */
+            }
         }
         html, body {
             height: 100%;
@@ -29,9 +34,15 @@
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             transition: transform 0.2s ease-in-out;
+            padding: 15px; /* Reduzir padding para mobile */
         }
         .card:hover {
             transform: translateY(-5px);
+        }
+        @media (min-width: 768px) {
+            .card {
+                padding: 24px; /* Voltar ao original para desktop */
+            }
         }
         .btn-primary {
             background-color: #d8b4fe; /* Lilás */
@@ -117,8 +128,8 @@
 .filtro-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  padding: 20px;
+  gap: 12px; /* Reduzir um pouco o gap para telas menores */
+  padding: 15px; /* Ajustar padding */
   background: #fcdff1;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -129,8 +140,8 @@
 .campo {
   display: flex;
   flex-direction: column;
-  flex: 1 1 200px;
-  min-width: 180px;
+  flex: 1 1 auto; /* Permite que os campos cresçam e encolham */
+  min-width: 140px; /* Reduzir o min-width para telas muito pequenas */
 }
 
 .campo label {
@@ -173,8 +184,7 @@
     padding: 15px;
   }
   .campo {
-    min-width: unset;
-    width: 100%;
+    min-width: 100%; /* Em telas menores, cada campo ocupa a largura total */
   }
   .campo.toggle {
     align-self: flex-start;
@@ -440,159 +450,6 @@
 /* Estilo para o fundo do dia atual no calendário */
 .fc-daygrid-day.fc-day-today {
     background-color: #fbcfe8; /* Rosa claro para o dia atual */
-}
-
-/* Estilo para o fundo dos eventos de status "Pago" */
-.fc-event[style*="background-color: rgb(16, 185, 129)"] {
-    background-color: #10B981 !important; /* Verde */
-}
-
-/* Estilo para o fundo dos eventos de status "Pendente" */
-.fc-event[style*="background-color: rgb(245, 158, 11)"] {
-    background-color: #F59E0B !important; /* Laranja */
-}
-
-/* Estilo para o fundo dos eventos de outros status */
-.fc-event[style*="background-color: rgb(107, 114, 128)"] {
-    background-color: #6B7280 !important; /* Cinza */
-}
-
-/* Estilo para o texto do tooltip */
-.tooltip:before {
-    background-color: #6b4b8b; /* Cor roxa mais escura para o fundo do tooltip */
-}
-
-/* Estilo para o texto do tooltip */
-.tooltip:after {
-    border-top-color: #6b4b8b; /* Cor roxa mais escura para a seta do tooltip */
-}
-
-/* Estilo para o texto do placeholder dos inputs */
-input::placeholder {
-    color: #a78bfa; /* Roxo principal para o placeholder */
-    opacity: 0.7; /* Torna o placeholder um pouco transparente */
-}
-
-/* Estilo para o texto dos inputs */
-input, select {
-    color: #6b4b8b; /* Cor roxa mais escura para o texto dos inputs */
-}
-
-/* Estilo para os labels */
-label {
-    color: #6b4b8b; /* Cor roxa mais escura para os labels */
-}
-
-/* Estilo para o título do painel */
-.text-3xl.font-semibold.text-purple-main {
-    color: #6b4b8b; /* Cor roxa mais escura para o título do painel */
-}
-
-/* Estilo para o subtítulo do painel */
-.text-gray-600 {
-    color: #6b4b8b; /* Cor roxa mais escura para o subtítulo do painel */
-}
-
-/* Estilo para o cabeçalho dos agendamentos */
-.text-2xl.font-semibold.text-purple-main {
-    color: #6b4b8b; /* Cor roxa mais escura para o cabeçalho dos agendamentos */
-}
-
-/* Estilo para o horário dos agendamentos */
-.text-xl.font-semibold.text-purple-main {
-    color: #6b4b8b; /* Cor roxa mais escura para o horário dos agendamentos */
-}
-
-/* Estilo para o procedimento, contato e profissional */
-.text-gray-700 {
-    color: #6b4b8b; /* Cor roxa mais escura para o texto do procedimento, contato e profissional */
-}
-
-/* Estilo para o status */
-.text-xs.font-bold.px-2.py-1.rounded-full.text-white {
-    color: white; /* Cor branca para o texto do status */
-}
-
-/* Estilo para o fundo do status "Pago" */
-.bg-green-500 {
-    background-color: #10B981; /* Verde */
-}
-
-/* Estilo para o fundo do status "Pendente" */
-.bg-yellow-500 {
-    background-color: #F59E0B; /* Laranja */
-}
-
-/* Estilo para o fundo de outros status */
-.bg-gray-400 {
-    background-color: #6B7280; /* Cinza */
-}
-
-/* Estilo para o fundo do card */
-.card {
-    background-color: #ffffff; /* Fundo branco para o card */
-}
-
-/* Estilo para a borda do card */
-.border-t.border-gray-200 {
-    border-color: #fbcfe8; /* Rosa mais escuro para a borda do card */
-}
-
-/* Estilo para a borda inferior da seção de agendamentos */
-.border-b-2.border-gray-200 {
-    border-color: #fbcfe8; /* Rosa mais escuro para a borda inferior da seção de agendamentos */
-}
-
-/* Estilo para o fundo do filtro */
-.filtro-container {
-    background-color: #fcdff1; /* Rosa claro para o fundo do filtro */
-}
-
-/* Estilo para a borda do input/select do filtro */
-.campo input, .campo select {
-    border-color: #fbcfe8; /* Rosa mais escuro para a borda do input/select do filtro */
-}
-
-/* Estilo para a borda do input/select do filtro no focus */
-.campo input:focus, .campo select:focus {
-    border-color: #a66bff; /* Roxo mais claro para a borda do input/select do filtro no focus */
-}
-
-/* Estilo para o fundo do dia atual no calendário */
-.fc-daygrid-day.fc-day-today {
-    background-color: #fbcfe8; /* Rosa claro para o dia atual */
-}
-
-/* Estilo para o fundo dos botões do calendário */
-.fc .fc-button-primary {
-    background-color: #a78bfa; /* Roxo principal */
-    border-color: #a78bfa;
-}
-
-/* Estilo para o fundo dos botões do calendário no hover */
-.fc .fc-button-primary:hover {
-    background-color: #c084fc; /* Lilás mais escuro */
-    border-color: #c084fc;
-}
-
-/* Estilo para o texto do título do calendário */
-.fc-toolbar-title {
-    color: #6b4b8b; /* Cor roxa mais escura para o título do calendário */
-}
-
-/* Estilo para os dias da semana no calendário */
-.fc-col-header-cell-cushion {
-    color: #6b4b8b; /* Cor roxa mais escura para os dias da semana */
-}
-
-/* Estilo para os números dos dias no calendário */
-.fc-daygrid-day-top {
-    color: #6b4b8b; /* Cor roxa mais escura para os números dos dias */
-}
-
-/* Estilo para os eventos do calendário */
-.fc-event {
-    color: white;
 }
 
 /* Estilo para o fundo dos eventos de status "Pago" */
