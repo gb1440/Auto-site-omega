@@ -448,3 +448,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- INICIALIZAÇÃO ---
     initializeApp();
 });
+
+// Comentário para forçar a detecção de mudança pelo Git.
