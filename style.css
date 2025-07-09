@@ -165,3 +165,497 @@
 .campo.full {
   flex: 1 1 100%;
 }
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .filtro-container {
+    flex-direction: column;
+    padding: 15px;
+  }
+  .campo {
+    min-width: unset;
+    width: 100%;
+  }
+  .campo.toggle {
+    align-self: flex-start;
+  }
+}
+
+/* Estilos para o FullCalendar */
+.fc .fc-button-primary {
+    background-color: #a78bfa; /* Roxo principal */
+    border-color: #a78bfa;
+    color: white;
+}
+
+.fc .fc-button-primary:hover {
+    background-color: #c084fc; /* Lilás mais escuro */
+    border-color: #c084fc;
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+    background-color: #fbcfe8; /* Rosa claro para o dia atual */
+}
+
+.fc-event {
+    border-radius: 5px;
+    font-size: 0.85em;
+    padding: 2px 4px;
+    cursor: pointer;
+}
+
+.fc-event-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fc-event-time {
+    font-weight: bold;
+}
+
+/* Ajustes para o layout do painel principal */
+#mainPanelScreen {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante que o painel ocupe a altura total da viewport */
+}
+
+#mainPanelScreen main {
+    flex-grow: 1; /* Permite que o conteúdo principal ocupe o espaço restante */
+}
+
+/* Esconder o container de filtros em telas pequenas por padrão */
+@media (max-width: 767px) {
+    #filterContainer {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+    }
+    #filterContainer.hidden {
+        display: none;
+    }
+    #filterContainer:not(.hidden) {
+        display: flex;
+    }
+}
+
+/* Mostrar o container de filtros em telas maiores */
+@media (min-width: 768px) {
+    #filterContainer {
+        display: flex !important; /* Sobrescreve o display: none para telas pequenas */
+        flex-direction: row;
+        width: auto;
+    }
+}
+
+/* Estilos para o botão de toggle de filtros em telas pequenas */
+@media (max-width: 767px) {
+    #toggleFiltersButton {
+        display: block; /* Mostra o botão em telas pequenas */
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Esconder o botão de toggle de filtros em telas grandes */
+@media (min-width: 768px) {
+    #toggleFiltersButton {
+        display: none; /* Esconde o botão em telas grandes */
+    }
+}
+
+/* Ajustes para o cabeçalho em telas pequenas */
+@media (max-width: 767px) {
+    .header-bg .container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .header-bg .container > div {
+        width: 100%;
+    }
+}
+
+/* Ajustes para o grupo de botões de ação no cabeçalho */
+.header-bg .flex.items-center.gap-2 {
+    flex-wrap: wrap; /* Permite que os botões quebrem a linha em telas menores */
+    justify-content: center; /* Centraliza os botões */
+}
+
+.header-bg .flex.items-center.gap-2 button {
+    flex-shrink: 0; /* Impede que os botões encolham */
+    margin-bottom: 0.5rem; /* Espaçamento entre os botões */
+}
+
+/* Ajuste para o tooltip */
+.tooltip:before {
+    z-index: 1000; /* Garante que o tooltip apareça acima de outros elementos */
+}
+
+/* Estilo para o ícone do logo */
+.login-box img {
+    filter: invert(40%) sepia(60%) saturate(1500%) hue-rotate(240deg) brightness(90%) contrast(90%); /* Ajusta a cor do ícone para roxo */
+}
+
+/* Estilo para o texto do cliente no card */
+.card .text-client-name {
+    color: #6b4b8b; /* Cor roxa mais escura para o nome do cliente */
+}
+
+/* Estilo para os ícones dentro dos cards */
+.card i {
+    color: #a78bfa; /* Roxo principal para os ícones */
+}
+
+/* Estilo para os botões de ação dentro dos cards */
+.card .h-10.w-10 {
+    background-color: #f0f0f0; /* Fundo cinza claro para os botões de ação */
+}
+
+.card .h-10.w-10:hover {
+    background-color: #e0e0e0; /* Fundo cinza mais escuro no hover */
+}
+
+/* Estilo para o texto do logo no cabeçalho */
+#logoTitle {
+    color: #6b4b8b; /* Cor roxa mais escura para o logo */
+}
+
+/* Estilo para o texto de carregamento/erro */
+.text-center.text-gray-500, .text-center.text-red-500 {
+    color: #6b4b8b; /* Cor roxa mais escura para mensagens */
+}
+
+/* Estilo para o input de busca */
+#searchPatient {
+    border-color: #a78bfa; /* Borda roxa para o input de busca */
+}
+
+/* Estilo para o checkbox de "Apenas Pagos" */
+#filterPaidCheckbox {
+    accent-color: #a78bfa; /* Cor roxa para o checkbox */
+}
+
+/* Estilo para o botão de "Entrar no Painel" */
+#enterPanelButton {
+    background-color: #a78bfa; /* Roxo principal */
+}
+
+#enterPanelButton:hover {
+    background-color: #c084fc; /* Lilás mais escuro */
+}
+
+/* Estilo para o botão de "Salvar Credenciais" na tela de login */
+#saveLoginCredentialsButton {
+    background-color: #a78bfa; /* Roxo principal */
+}
+
+#saveLoginCredentialsButton:hover {
+    background-color: #c084fc; /* Lilás mais escuro */
+}
+
+/* Estilo para o botão de "Limpar Credenciais" na tela de login */
+#clearCredentials {
+    background-color: #f472b6; /* Rosa acentuado */
+}
+
+#clearCredentials:hover {
+    background-color: #ec4899; /* Rosa mais escuro */
+}
+
+/* Estilo para o botão de "Mostrar/Esconder Filtros" */
+#toggleFiltersButton {
+    background-color: #a78bfa; /* Roxo principal */
+}
+
+#toggleFiltersButton:hover {
+    background-color: #c084fc; /* Lilás mais escuro */
+}
+
+/* Estilo para o botão de "Salvar Credenciais" no painel */
+#saveCredentials {
+    background-color: #a78b8b; /* Roxo principal */
+}
+
+#saveCredentials:hover {
+    background-color: #c084fc; /* Lilás mais escuro */
+}
+
+/* Estilo para o botão de "Recarregar Dados" */
+#reloadData {
+    background-color: #a78bfa; /* Roxo principal */
+}
+
+#reloadData:hover {
+    background-color: #c084fc; /* Lilás mais escuro */
+}
+
+/* Estilo para o botão de "Sair" */
+#clearFilters {
+    background-color: #f472b6; /* Rosa acentuado */
+}
+
+#clearFilters:hover {
+    background-color: #ec4899; /* Rosa mais escuro */
+}
+
+/* Estilo para o botão de "Ver Calendário" */
+#toggleViewButton {
+    background-color: #a78bfa; /* Roxo principal */
+}
+
+#toggleViewButton:hover {
+    background-color: #c084fc; /* Lilás mais escuro */
+}
+
+/* Estilo para o título do calendário */
+.fc-toolbar-title {
+    color: #6b4b8b; /* Cor roxa mais escura para o título do calendário */
+}
+
+/* Estilo para os botões de navegação do calendário */
+.fc-button {
+    color: white;
+}
+
+.fc-button:hover {
+    color: white;
+}
+
+/* Estilo para os dias da semana no calendário */
+.fc-col-header-cell-cushion {
+    color: #6b4b8b; /* Cor roxa mais escura para os dias da semana */
+}
+
+/* Estilo para os números dos dias no calendário */
+.fc-daygrid-day-top {
+    color: #6b4b8b; /* Cor roxa mais escura para os números dos dias */
+}
+
+/* Estilo para os eventos do calendário */
+.fc-event {
+    color: white;
+}
+
+/* Estilo para o fundo do dia atual no calendário */
+.fc-daygrid-day.fc-day-today {
+    background-color: #fbcfe8; /* Rosa claro para o dia atual */
+}
+
+/* Estilo para o fundo dos eventos de status "Pago" */
+.fc-event[style*="background-color: rgb(16, 185, 129)"] {
+    background-color: #10B981 !important; /* Verde */
+}
+
+/* Estilo para o fundo dos eventos de status "Pendente" */
+.fc-event[style*="background-color: rgb(245, 158, 11)"] {
+    background-color: #F59E0B !important; /* Laranja */
+}
+
+/* Estilo para o fundo dos eventos de outros status */
+.fc-event[style*="background-color: rgb(107, 114, 128)"] {
+    background-color: #6B7280 !important; /* Cinza */
+}
+
+/* Estilo para o texto do tooltip */
+.tooltip:before {
+    background-color: #6b4b8b; /* Cor roxa mais escura para o fundo do tooltip */
+}
+
+/* Estilo para o texto do tooltip */
+.tooltip:after {
+    border-top-color: #6b4b8b; /* Cor roxa mais escura para a seta do tooltip */
+}
+
+/* Estilo para o texto do placeholder dos inputs */
+input::placeholder {
+    color: #a78bfa; /* Roxo principal para o placeholder */
+    opacity: 0.7; /* Torna o placeholder um pouco transparente */
+}
+
+/* Estilo para o texto dos inputs */
+input, select {
+    color: #6b4b8b; /* Cor roxa mais escura para o texto dos inputs */
+}
+
+/* Estilo para os labels */
+label {
+    color: #6b4b8b; /* Cor roxa mais escura para os labels */
+}
+
+/* Estilo para o título do painel */
+.text-3xl.font-semibold.text-purple-main {
+    color: #6b4b8b; /* Cor roxa mais escura para o título do painel */
+}
+
+/* Estilo para o subtítulo do painel */
+.text-gray-600 {
+    color: #6b4b8b; /* Cor roxa mais escura para o subtítulo do painel */
+}
+
+/* Estilo para o cabeçalho dos agendamentos */
+.text-2xl.font-semibold.text-purple-main {
+    color: #6b4b8b; /* Cor roxa mais escura para o cabeçalho dos agendamentos */
+}
+
+/* Estilo para o horário dos agendamentos */
+.text-xl.font-semibold.text-purple-main {
+    color: #6b4b8b; /* Cor roxa mais escura para o horário dos agendamentos */
+}
+
+/* Estilo para o procedimento, contato e profissional */
+.text-gray-700 {
+    color: #6b4b8b; /* Cor roxa mais escura para o texto do procedimento, contato e profissional */
+}
+
+/* Estilo para o status */
+.text-xs.font-bold.px-2.py-1.rounded-full.text-white {
+    color: white; /* Cor branca para o texto do status */
+}
+
+/* Estilo para o fundo do status "Pago" */
+.bg-green-500 {
+    background-color: #10B981; /* Verde */
+}
+
+/* Estilo para o fundo do status "Pendente" */
+.bg-yellow-500 {
+    background-color: #F59E0B; /* Laranja */
+}
+
+/* Estilo para o fundo de outros status */
+.bg-gray-400 {
+    background-color: #6B7280; /* Cinza */
+}
+
+/* Estilo para o fundo do card */
+.card {
+    background-color: #ffffff; /* Fundo branco para o card */
+}
+
+/* Estilo para a borda do card */
+.border-t.border-gray-200 {
+    border-color: #fbcfe8; /* Rosa mais escuro para a borda do card */
+}
+
+/* Estilo para a borda inferior da seção de agendamentos */
+.border-b-2.border-gray-200 {
+    border-color: #fbcfe8; /* Rosa mais escuro para a borda inferior da seção de agendamentos */
+}
+
+/* Estilo para o fundo do filtro */
+.filtro-container {
+    background-color: #fcdff1; /* Rosa claro para o fundo do filtro */
+}
+
+/* Estilo para a borda do input/select do filtro */
+.campo input, .campo select {
+    border-color: #fbcfe8; /* Rosa mais escuro para a borda do input/select do filtro */
+}
+
+/* Estilo para a borda do input/select do filtro no focus */
+.campo input:focus, .campo select:focus {
+    border-color: #a66bff; /* Roxo mais claro para a borda do input/select do filtro no focus */
+}
+
+/* Estilo para o fundo do dia atual no calendário */
+.fc-daygrid-day.fc-day-today {
+    background-color: #fbcfe8; /* Rosa claro para o dia atual */
+}
+
+/* Estilo para o fundo dos botões do calendário */
+.fc .fc-button-primary {
+    background-color: #a78bfa; /* Roxo principal */
+    border-color: #a78bfa;
+}
+
+/* Estilo para o fundo dos botões do calendário no hover */
+.fc .fc-button-primary:hover {
+    background-color: #c084fc; /* Lilás mais escuro */
+    border-color: #c084fc;
+}
+
+/* Estilo para o texto do título do calendário */
+.fc-toolbar-title {
+    color: #6b4b8b; /* Cor roxa mais escura para o título do calendário */
+}
+
+/* Estilo para os dias da semana no calendário */
+.fc-col-header-cell-cushion {
+    color: #6b4b8b; /* Cor roxa mais escura para os dias da semana */
+}
+
+/* Estilo para os números dos dias no calendário */
+.fc-daygrid-day-top {
+    color: #6b4b8b; /* Cor roxa mais escura para os números dos dias */
+}
+
+/* Estilo para os eventos do calendário */
+.fc-event {
+    color: white;
+}
+
+/* Estilo para o fundo dos eventos de status "Pago" */
+.fc-event[style*="background-color: rgb(16, 185, 129)"] {
+    background-color: #10B981 !important; /* Verde */
+}
+
+/* Estilo para o fundo dos eventos de status "Pendente" */
+.fc-event[style*="background-color: rgb(245, 158, 11)"] {
+    background-color: #F59E0B !important; /* Laranja */
+}
+
+/* Estilo para o fundo dos eventos de outros status */
+.fc-event[style*="background-color: rgb(107, 114, 128)"] {
+    background-color: #6B7280 !important; /* Cinza */
+}
+
+/* Estilo para o texto do tooltip */
+.tooltip:before {
+    background-color: #6b4b8b; /* Cor roxa mais escura para o fundo do tooltip */
+}
+
+/* Estilo para o texto do tooltip */
+.tooltip:after {
+    border-top-color: #6b4b8b; /* Cor roxa mais escura para a seta do tooltip */
+}
+
+/* Estilo para o texto do placeholder dos inputs */
+input::placeholder {
+    color: #a78bfa; /* Roxo principal para o placeholder */
+    opacity: 0.7; /* Torna o placeholder um pouco transparente */
+}
+
+/* Estilo para o texto dos inputs */
+input, select {
+    color: #6b4b8b; /* Cor roxa mais escura para o texto dos inputs */
+}
+
+/* Estilo para os labels */
+label {
+    color: #6b4b8b; /* Cor roxa mais escura para os labels */
+}
+
+/* Estilos para a tela do Dashboard */
+#dashboardScreen {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 20px;
+}
+
+#dashboardResults .card {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+#dashboardResults .card h3 {
+    color: #a78bfa; /* Roxo principal */
+}
+
+#dashboardResults .card p {
+    color: #6b4b8b; /* Roxo mais escuro */
+}

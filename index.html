@@ -88,6 +88,9 @@
                         <button id="toggleViewButton" class="btn-primary tooltip" data-tooltip="Ver Calendário">
                             <i class="fas fa-calendar-alt"></i>
                         </button>
+                        <button id="showDashboardButton" class="btn-primary tooltip" data-tooltip="Ver Dashboard">
+                            <i class="fas fa-chart-bar"></i>
+                        </button>
                     </div>
                 </div>
                 </div>
@@ -99,6 +102,36 @@
                 <!-- Agendamentos serão carregados aqui via JS -->
             </div>
             <div id="calendarContainer" class="hidden"></div>
+
+            <!-- Tela do Dashboard -->
+            <div id="dashboardScreen" class="hidden flex-col">
+                <h2 class="text-3xl font-semibold text-purple-main mb-6 text-center">Dashboard de Agendamentos</h2>
+                <div class="filtro-container mb-8">
+                    <div class="campo">
+                        <label for="dashboardPeriodSelector">Período</label>
+                        <select id="dashboardPeriodSelector">
+                            <option value="custom">Personalizado</option>
+                            <option value="weekly">Últimos 7 dias</option>
+                            <option value="monthly">Últimos 30 dias</option>
+                            <option value="yearly">Ano Atual</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="dashboardStartDate">Data Início</label>
+                        <input type="date" id="dashboardStartDate" />
+                    </div>
+                    <div class="campo">
+                        <label for="dashboardEndDate">Data Fim</label>
+                        <input type="date" id="dashboardEndDate" />
+                    </div>
+                    <div class="campo">
+                        <button id="applyDashboardFilters" class="btn-primary w-full mt-6">Aplicar Filtros</button>
+                    </div>
+                </div>
+                <div id="dashboardResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Resultados do dashboard serão carregados aqui via JS -->
+                </div>
+            </div>
         </main>
     </div>
 
