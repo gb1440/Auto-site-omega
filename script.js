@@ -105,16 +105,18 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const RANGE = `'${selectedSheet}'${RANGE_SUFFIX}`;
+        const RANGES = ['A:G', 'G:M', 'M:S']; // Ranges para as três tabelas
+        const rangesQuery = RANGES.map(r => `ranges='${selectedSheet}'!${r}`).join('&');
+
         appointmentsContainer.innerHTML = '<p class="text-center text-gray-500">Carregando agendamentos...</p>';
 
         try {
-            const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${RANGE}?key=${API_KEY}`);
+            const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values:batchGet?${rangesQuery}&key=${API_KEY}`);
             if (!response.ok) {
                 throw new Error(`Erro na API do Google Sheets: ${response.statusText}`);
             }
             const data = await response.json();
-            processAppointmentData(data.values);
+            processAppointmentData(data.valueRanges); // Agora passamos valueRanges
         } catch (error) {
             console.error('Erro ao buscar agendamentos:', error);
             appointmentsContainer.innerHTML = `<p class="text-center text-red-500">Erro ao carregar agendamentos: ${error.message}. Verifique o ID, a chave, o nome da aba e o range.</p>`;
@@ -123,41 +125,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- PROCESSAMENTO E EXIBIÇÃO DE DADOS ---
 
-    function processAppointmentData(values) {
+    function processAppointmentData(valueRanges) {
         allAppointments = [];
-        let currentDate = '';
 
-        if (!values || values.length === 0) {
+        if (!valueRanges || valueRanges.length === 0) {
             appointmentsContainer.innerHTML = '<p class="text-center text-gray-500">Nenhum dado encontrado na aba selecionada.</p>';
             return;
         }
 
-        for (const row of values) {
-            if (!row || row.length === 0 || (row.length === 1 && row[0] === '')) continue;
+        for (const valueRange of valueRanges) {
+            const values = valueRange.values; // Pega o array 2D de valores para este range
 
-            if (row.length === 2 && row[0] === '' && row[1] && (row[1].includes('/') || row[1].includes('-'))) {
-                const dateMatch = row[1].match(/\d{2}[\/\-]\d{2}(?:[\/\-]\d{4})?/);
-                if (dateMatch) {
-                    let [day, month, year] = dateMatch[0].split(/[\/\-]/);
-                    if (!year) year = new Date().getFullYear();
-                    currentDate = `${day}/${month}/${year}`;
-                }
-                continue;
+            if (!values || values.length === 0) {
+                continue; // Pula ranges vazios
             }
 
-            if (row.length >= 6 && row[1] === 'Horário' && row[2] === 'Paciente') continue;
+            let currentDate = ''; // Reseta a data atual para cada novo bloco de tabela
 
-            if (row.length >= 6 && row[1] && row[2] && currentDate) {
-                const normalizedTime = normalizeTime(row[1]);
-                if (normalizedTime) {
-                    allAppointments.push({
-                        time: `${currentDate} ${normalizedTime}`,
-                        patient: row[2] || '',
-                        contact: row[3] || '',
-                        procedure: row[4] || '',
-                        professional: row[5] || '',
-                        status: row[6] || ''
-                    });
+            for (const row of values) {
+                if (!row || row.length === 0 || (row.length === 1 && row[0] === '')) continue;
+
+                if (row.length === 2 && row[0] === '' && row[1] && (row[1].includes('/') || row[1].includes('-'))) {
+                    const dateMatch = row[1].match(/\d{2}[\/\-]\d{2}(?:[\/\-]\d{4})?/);
+                    if (dateMatch) {
+                        let [day, month, year] = dateMatch[0].split(/[\/\-]/);
+                        if (!year) year = new Date().getFullYear();
+                        currentDate = `${day}/${month}/${year}`;
+                    }
+                    continue;
+                }
+
+                if (row.length >= 6 && row[1] === 'Horário' && row[2] === 'Paciente') continue;
+
+                if (row.length >= 6 && row[1] && row[2] && currentDate) {
+                    const normalizedTime = normalizeTime(row[1]);
+                    if (normalizedTime) {
+                        allAppointments.push({
+                            time: `${currentDate} ${normalizedTime}`,
+                            patient: row[2] || '',
+                            contact: row[3] || '',
+                            procedure: row[4] || '',
+                            professional: row[5] || '',
+                            status: row[6] || ''
+                        });
+                    }
                 }
             }
         }
