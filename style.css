@@ -35,9 +35,20 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             transition: transform 0.2s ease-in-out;
             padding: 15px; /* Reduzir padding para mobile */
+            position: relative;
+            border-left: 5px solid transparent;
         }
         .card:hover {
             transform: translateY(-5px);
+        }
+        .card.status-border-paid {
+            border-left-color: #10B981;
+        }
+        .card.status-border-pending {
+            border-left-color: #F59E0B;
+        }
+        .card.status-border-default {
+            border-left-color: #6B7280;
         }
         @media (min-width: 768px) {
             .card {
@@ -318,6 +329,25 @@
 }
 
 /* Estilo para os botões de ação dentro dos cards */
+.card .card-actions {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+    .card .card-actions {
+        opacity: 0;
+        transform: translateY(4px);
+        transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .card:hover .card-actions {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .card .h-10.w-10 {
     background-color: #f0f0f0; /* Fundo cinza claro para os botões de ação */
 }
@@ -542,4 +572,34 @@ label {
 
 #dashboardResults .card p {
     color: #6b4b8b; /* Roxo mais escuro */
+}
+
+/* Toast Notification Styles */
+.toast {
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast.success {
+    background-color: #10B981; /* Green */
+}
+
+.toast.error {
+    background-color: #EF4444; /* Red */
+}
+
+.toast.info {
+    background-color: #3B82F6; /* Blue */
 }

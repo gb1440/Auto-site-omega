@@ -55,6 +55,13 @@
                         </div>
 
                         <div class="campo">
+                            <label for="filterMonth">Mês</label>
+                            <select id="filterMonth">
+                                <option value="">Todos os Meses</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
                             <label for="filterProcedure"> Status</label>
                             <select id="filterProcedure">
                                 <option value="">Todos os Status</option>
@@ -137,5 +144,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <script src="script.js"></script>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 space-y-2"></div>
 </body>
 </html>

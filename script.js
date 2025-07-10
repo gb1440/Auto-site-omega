@@ -9,19 +9,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const dashboardScreen = document.getElementById('dashboardScreen');
     const loginScreen = document.getElementById('loginScreen');
     const mainPanelScreen = document.getElementById('mainPanelScreen');
+    const toastContainer = document.getElementById('toastContainer');
 
     // Inputs e Botões de Login
     const spreadsheetIdInput = document.getElementById('spreadsheetIdInput');
     const apiKeyInput = document.getElementById('apiKeyInput');
     const enterPanelButton = document.getElementById('enterPanelButton');
     const saveLoginCredentialsButton = document.getElementById('saveLoginCredentialsButton');
-    
 
     // Filtros e Botões do Painel
     const sheetSelector = document.getElementById('sheetSelector');
     const searchPatientInput = document.getElementById('searchPatient');
     const filterProfessionalSelect = document.getElementById('filterProfessional');
     const filterDateInput = document.getElementById('filterDate');
+    const filterMonthSelect = document.getElementById('filterMonth');
     const filterProcedureSelect = document.getElementById('filterProcedure');
     const filterPaidCheckbox = document.getElementById('filterPaidCheckbox');
     const toggleFiltersButton = document.getElementById('toggleFiltersButton');
@@ -67,25 +68,25 @@ document.addEventListener('DOMContentLoaded', () => {
     async function showMainPanel() {
         loginScreen.style.display = 'none';
         mainPanelScreen.style.display = 'flex';
-        appointmentsContainer.classList.remove('hidden'); // Garante que a lista de agendamentos esteja visível
-        calendarContainer.classList.add('hidden'); // Garante que o calendário esteja oculto
-        dashboardScreen.style.display = 'none'; // Garante que o dashboard esteja oculto
+        appointmentsContainer.classList.remove('hidden');
+        calendarContainer.classList.add('hidden');
+        dashboardScreen.style.display = 'none';
         document.body.classList.remove('no-scroll');
-        initializeCalendar(); // Inicializa o calendário na primeira vez que o painel é exibido
-        await fetchAndProcessAppointments(); // Busca e processa os agendamentos
+        initializeCalendar();
+        await fetchAndProcessAppointments();
     }
 
     async function showDashboardScreen() {
         loginScreen.style.display = 'none';
-        mainPanelScreen.style.display = 'flex'; // Mantém o mainPanelScreen visível para o dashboard
+        mainPanelScreen.style.display = 'flex';
         appointmentsContainer.style.display = 'none';
         calendarContainer.style.display = 'none';
         dashboardScreen.style.display = 'flex';
         document.body.classList.remove('no-scroll');
-        dashboardPeriodSelector.value = 'monthly'; // Define o padrão como mensal
-        updateDashboardDates(); // Atualiza as datas com base no período padrão
-        await fetchAndProcessAppointments(); // Garante que os dados estejam atualizados para o dashboard
-        generateDashboard(); // Gera o dashboard com as datas padrão
+        dashboardPeriodSelector.value = 'monthly';
+        updateDashboardDates();
+        await fetchAndProcessAppointments();
+        generateDashboard();
     }
 
     function updateDashboardDates() {
@@ -99,16 +100,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         switch (period) {
             case 'weekly':
-                startDate.setDate(today.getDate() - 6); // Últimos 7 dias
+                startDate.setDate(today.getDate() - 6);
                 break;
             case 'monthly':
-                startDate.setDate(today.getDate() - 29); // Últimos 30 dias
+                startDate.setDate(today.getDate() - 29);
                 break;
             case 'yearly':
-                startDate = new Date(today.getFullYear(), 0, 1); // Início do ano
+                startDate = new Date(today.getFullYear(), 0, 1);
                 break;
             case 'custom':
-                // As datas já estão nos inputs, não faz nada aqui
                 break;
         }
 
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedSheet = sheetSelector.value;
 
         if (!SPREADSHEET_ID || !API_KEY) {
-            appointmentsContainer.innerHTML = '<p class="text-center text-red-500">Por favor, insira o ID da Planilha e a Chave da API.</p>';
+            showToast('Por favor, insira o ID da Planilha e a Chave da API.', 'error');
             return;
         }
 
@@ -136,27 +136,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const sheetTitles = await fetchSheetNames(SPREADSHEET_ID, API_KEY);
             populateSheetSelector(sheetTitles, sheetSelector);
 
-            // Se não houver aba selecionada, tenta usar a primeira ou a salva
-            const currentSelectedSheet = selectedSheet || sheetTitles[0];
+            const currentSelectedSheet = sheetSelector.value || sheetTitles[0];
             if (!currentSelectedSheet) {
-                appointmentsContainer.innerHTML = '<p class="text-center text-red-500">Nenhuma aba encontrada na planilha.</p>';
+                showToast('Nenhuma aba encontrada na planilha.', 'error');
                 return;
             }
-            sheetSelector.value = currentSelectedSheet; // Garante que o seletor esteja com a aba correta
+            sheetSelector.value = currentSelectedSheet;
 
             allAppointments = await fetchAppointments(SPREADSHEET_ID, API_KEY, currentSelectedSheet);
 
             if (allAppointments.length > 0) {
                 displayAppointments(allAppointments, appointmentsContainer);
                 populateFilters(filterProfessionalSelect, filterProcedureSelect, allAppointments);
+                populateMonthFilter(allAppointments);
                 updateCalendarEvents(allAppointments);
             } else {
-                displayAppointments([], appointmentsContainer); // Limpa a exibição
-                updateCalendarEvents([]); // Limpa o calendário se não houver eventos
+                displayAppointments([], appointmentsContainer);
+                updateCalendarEvents([]);
             }
         } catch (error) {
             console.error('Erro ao buscar agendamentos:', error);
-            appointmentsContainer.innerHTML = `<p class="text-center text-red-500">Erro ao carregar agendamentos: ${error.message}. Verifique o ID, a chave, o nome da aba e o range.</p>`;
+            showToast(`Erro ao carregar agendamentos: ${error.message}.`, 'error');
         }
     }
 
@@ -166,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchTerm = searchPatientInput.value.toLowerCase();
         const selectedProfessional = filterProfessionalSelect.value;
         const selectedDate = filterDateInput.value;
+        const selectedMonth = filterMonthSelect.value;
         const selectedProcedure = filterProcedureSelect.value;
         const filterPaid = filterPaidCheckbox.checked;
 
@@ -173,17 +174,70 @@ document.addEventListener('DOMContentLoaded', () => {
             const [datePart] = app.time.split(' ');
             const [day, month, year] = datePart.split('/');
             const formattedAppDate = `${year}-${month}-${day}`;
+            const appMonthYear = `${month}/${year}`;
+
+            const dateFilter = selectedDate === '' || formattedAppDate === selectedDate;
+            const monthFilter = selectedMonth === '' || appMonthYear === selectedMonth;
 
             return (app.patient.toLowerCase().includes(searchTerm) || app.contact.includes(searchTerm)) &&
                    (selectedProfessional === '' || app.professional === selectedProfessional) &&
-                   (selectedDate === '' || formattedAppDate === selectedDate) &&
+                   dateFilter &&
+                   monthFilter &&
                    (selectedProcedure === '' || app.procedure === selectedProcedure) &&
                    (!filterPaid || app.status?.toLowerCase() === 'pago');
         });
         displayAppointments(filteredAppointments, appointmentsContainer);
     }
 
+    function populateMonthFilter(appointments) {
+        const months = new Set();
+        appointments.forEach(app => {
+            const [datePart] = app.time.split(' ');
+            const [day, month, year] = datePart.split('/');
+            if (month && year) {
+                months.add(`${month}/${year}`);
+            }
+        });
+
+        const sortedMonths = Array.from(months).sort((a, b) => {
+            const [monthA, yearA] = a.split('/');
+            const [monthB, yearB] = b.split('/');
+            const dateA = new Date(yearA, monthA - 1);
+            const dateB = new Date(yearB, monthB - 1);
+            return dateA - dateB;
+        });
+
+        filterMonthSelect.innerHTML = '<option value="">Todos os Meses</option>';
+        sortedMonths.forEach(monthYear => {
+            const [month, year] = monthYear.split('/');
+            const date = new Date(year, month - 1);
+            const monthName = date.toLocaleString('pt-BR', { month: 'long' });
+            const option = document.createElement('option');
+            option.value = monthYear;
+            option.textContent = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} de ${year}`;
+            filterMonthSelect.appendChild(option);
+        });
+    }
+
     // --- FUNÇÕES AUXILIARES E CREDENCIAIS ---
+
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 100); // Delay for CSS transition
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3000); // Toast visible for 3 seconds
+    }
 
     function loadCredentials() {
         spreadsheetIdInput.value = localStorage.getItem('spreadsheetId') || '';
@@ -196,30 +250,40 @@ document.addEventListener('DOMContentLoaded', () => {
         if (id && key) {
             localStorage.setItem('spreadsheetId', id);
             localStorage.setItem('apiKey', key);
-            alert('Credenciais salvas com sucesso!');
+            showToast('Credenciais salvas com sucesso!', 'success');
         } else {
-            alert('Por favor, preencha o ID da Planilha e a Chave da API para salvar.');
+            showToast('Por favor, preencha o ID da Planilha e a Chave da API para salvar.', 'error');
         }
     }
-
-    
 
     // --- EVENT LISTENERS ---
 
     enterPanelButton.addEventListener('click', () => { saveCredentials(); showMainPanel(); });
     saveLoginCredentialsButton.addEventListener('click', saveCredentials);
-    
 
-    sheetSelector.addEventListener('change', fetchAndProcessAppointments); // Alterado para usar a nova função
-    reloadDataButton.addEventListener('click', fetchAndProcessAppointments); // Alterado para usar a nova função
+    sheetSelector.addEventListener('change', fetchAndProcessAppointments);
+    reloadDataButton.addEventListener('click', fetchAndProcessAppointments);
     saveCredentialsButton.addEventListener('click', saveCredentials);
-    logoutButton.addEventListener('click', showLoginScreen); // Botão Sair
+    logoutButton.addEventListener('click', showLoginScreen);
 
-    [searchPatientInput, filterDateInput].forEach(el => el.addEventListener('input', applyFilters));
+    [searchPatientInput].forEach(el => el.addEventListener('input', applyFilters));
     [filterProfessionalSelect, filterProcedureSelect, filterPaidCheckbox].forEach(el => el.addEventListener('change', applyFilters));
 
+    filterDateInput.addEventListener('input', () => {
+        if (filterDateInput.value !== '') {
+            filterMonthSelect.value = '';
+        }
+        applyFilters();
+    });
+
+    filterMonthSelect.addEventListener('change', () => {
+        if (filterMonthSelect.value !== '') {
+            filterDateInput.value = '';
+        }
+        applyFilters();
+    });
+
     logoTitle.addEventListener('click', () => {
-        // Recarrega a página inteira.
         location.reload();
     });
 
@@ -227,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleViewButton.addEventListener('click', () => {
         calendarContainer.classList.toggle('hidden');
         appointmentsContainer.classList.toggle('hidden');
-        dashboardScreen.style.display = 'none'; // Esconde o dashboard
+        dashboardScreen.style.display = 'none';
         const isCalendarVisible = !calendarContainer.classList.contains('hidden');
 
         if (isCalendarVisible) {
@@ -251,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÕES DO CALENDÁRIO ---
     function initializeCalendar() {
-        if (calendar) return; // Não inicializa duas vezes
+        if (calendar) return;
 
         calendar = new FullCalendar.Calendar(calendarContainer, {
             locale: 'pt-br',
@@ -261,17 +325,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            events: [], // Começa vazio
+            events: [],
             eventClick: function(info) {
                 const event = info.event;
                 const props = event.extendedProps;
-                alert(
-                    `Cliente: ${event.title}\n` +
+                const message = `Cliente: ${event.title}\n` +
                     `Horário: ${event.start.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`+
                     `Procedimento: ${props.procedure}\n` +
                     `Profissional: ${props.professional}\n` +
-                    `Status: ${props.status}`
-                );
+                    `Status: ${props.status}`;
+                showToast(message, 'info');
             }
         });
     }
@@ -293,14 +356,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     status: app.status,
                     contact: app.contact
                 },
-                // Muda a cor do evento com base no status
                 backgroundColor: app.status?.toLowerCase() === 'pago' ? '#10B981' : (app.status?.toLowerCase() === 'pendente' ? '#F59E0B' : '#6B7280'),
                 borderColor: app.status?.toLowerCase() === 'pago' ? '#10B981' : (app.status?.toLowerCase() === 'pendente' ? '#F59E0B' : '#6B7280')
             };
         });
 
-        calendar.getEventSources().forEach(source => source.remove()); // Remove a fonte de eventos antiga
-        calendar.addEventSource(events); // Adiciona a nova fonte
+        calendar.getEventSources().forEach(source => source.remove());
+        calendar.addEventSource(events);
     }
 
     // --- FUNÇÕES DO DASHBOARD ---
@@ -309,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const endDate = dashboardEndDateInput.value;
 
         if (!startDate || !endDate) {
-            dashboardResultsContainer.innerHTML = '<p class="text-center text-red-500">Por favor, selecione as datas de início e fim.</p>';
+            showToast('Por favor, selecione as datas de início e fim.', 'error');
             return;
         }
 
@@ -334,14 +396,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÕES DA API DO GOOGLE SHEETS (MOVIDAS DE apiService.js) ---
 
-    const RANGE_SUFFIX = '!A:G'; // Range das colunas, a aba será adicionada dinamicamente
+    const RANGE_SUFFIX = '!A:G';
 
-    /**
-     * Busca os nomes de todas as abas (páginas) da planilha.
-     * @param {string} spreadsheetId - O ID da planilha do Google Sheets.
-     * @param {string} apiKey - A chave da API do Google Sheets.
-     * @returns {Promise<string[]>} Uma promessa que resolve com um array de nomes de abas.
-     */
     async function fetchSheetNames(spreadsheetId, apiKey) {
         if (!spreadsheetId || !apiKey) {
             throw new Error("ID da Planilha e Chave da API são obrigatórios.");
@@ -360,19 +416,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /**
-     * Busca os dados de agendamentos da aba atualmente selecionada.
-     * @param {string} spreadsheetId - O ID da planilha do Google Sheets.
-     * @param {string} apiKey - A chave da API do Google Sheets.
-     * @param {string} selectedSheet - O nome da aba selecionada.
-     * @returns {Promise<Array<Object>>} Uma promessa que resolve com um array de objetos de agendamento.
-     */
     async function fetchAppointments(spreadsheetId, apiKey, selectedSheet) {
         if (!spreadsheetId || !apiKey || !selectedSheet) {
             throw new Error("ID da Planilha, Chave da API e Aba selecionada são obrigatórios.");
         }
 
-        const RANGES = ['A:G', 'G:M', 'M:S']; // Ranges para as três tabelas
+        const RANGES = ['A:G', 'G:M', 'M:S'];
         const rangesQuery = RANGES.map(r => `ranges='${selectedSheet}'!${r}`).join('&');
 
         try {
@@ -388,11 +437,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /**
-     * Processa os dados brutos da API do Google Sheets em um formato utilizável.
-     * @param {Array<Object>} valueRanges - Os ranges de valores retornados pela API.
-     * @returns {Array<Object>} Um array de objetos de agendamento.
-     */
     function processAppointmentData(valueRanges) {
         const allAppointments = [];
 
@@ -442,11 +486,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return allAppointments;
     }
 
-    /**
-     * Normaliza uma string de tempo para o formato HH:mm.
-     * @param {string} timeStr - A string de tempo a ser normalizada.
-     * @returns {string|null} O tempo normalizado ou null se não puder ser normalizado.
-     */
     function normalizeTime(timeStr) {
         if (!timeStr) return null;
         let str = String(timeStr).toLowerCase().trim().replace(/\s/g, '');
@@ -459,11 +498,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÕES DE UI (MOVIDAS DE uiManager.js) ---
 
-    /**
-     * Exibe os agendamentos na interface do usuário.
-     * @param {Array<Object>} appointmentsToDisplay - Array de objetos de agendamento a serem exibidos.
-     * @param {HTMLElement} container - O elemento HTML onde os agendamentos serão renderizados.
-     */
     function displayAppointments(appointmentsToDisplay, container) {
         container.innerHTML = '';
 
@@ -506,10 +540,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         const isPending = app.status?.toLowerCase() === 'pendente';
                         const statusBadgeClass = isPaid ? 'bg-green-500' : (isPending ? 'bg-yellow-500' : 'bg-gray-400');
                         const statusBadgeText = isPaid ? 'Pago' : (isPending ? 'Pendente' : (app.status || 'Não Informado'));
+                        const statusBorderClass = isPaid ? 'status-border-paid' : (isPending ? 'status-border-pending' : 'status-border-default');
                         const cleanPhoneNumber = formatPhoneNumberForLinks(app.contact);
 
                         return `
-                            <div class="card group p-6 flex flex-col justify-between overflow-hidden">
+                            <div class="card ${statusBorderClass} p-6 flex flex-col justify-between overflow-hidden">
                                 <div>
                                     <p class="text-xl font-semibold text-purple-main mb-2 flex items-center">
                                         <i class="far fa-clock mr-2 text-pink-accent"></i> ${app.time.split(' ')[1]}
@@ -522,7 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <p class="text-gray-700 mb-1"><i class="fas fa-phone-alt mr-2 text-pink-accent"></i> ${app.contact}</p>
                                     <p class="text-gray-700"><i class="fas fa-user-tie mr-2 text-pink-accent"></i> Prof: ${app.professional}</p>
                                 </div>
-                                <div class="mt-4 pt-4 border-t border-gray-200 flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                                <div class="card-actions mt-4 pt-4 border-t border-gray-200 flex items-center justify-end space-x-2">
                                     <a href="tel:${cleanPhoneNumber}" target="_blank" class="h-10 w-10 flex items-center justify-center rounded-full text-purple-500 hover:bg-purple-100 transition-colors tooltip" data-tooltip="Ligar para ${app.contact}">
                                         <i class="fas fa-phone-alt fa-xl"></i>
                                     </a>
@@ -540,11 +575,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /**
-     * Preenche o seletor de abas com os nomes das abas fornecidos.
-     * @param {string[]} sheetNames - Array de nomes de abas.
-     * @param {HTMLElement} sheetSelectorElement - O elemento select para as abas.
-     */
     function populateSheetSelector(sheetNames, sheetSelectorElement) {
         sheetSelectorElement.innerHTML = '';
         sheetNames.forEach(name => {
@@ -555,24 +585,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /**
-     * Preenche os seletores de filtro com opções baseadas nos dados dos agendamentos.
-     * @param {HTMLElement} professionalSelectElement - O elemento select para profissionais.
-     * @param {HTMLElement} procedureSelectElement - O elemento select para procedimentos.
-     * @param {Array<Object>} appointments - Array de objetos de agendamento.
-     */
     function populateFilters(professionalSelectElement, procedureSelectElement, appointments) {
         populateSelectWithOptions(professionalSelectElement, appointments, 'professional', 'Todos os Profissionais');
         populateSelectWithOptions(procedureSelectElement, appointments, 'procedure', 'Todos os Atendimentos');
     }
 
-    /**
-     * Função auxiliar para preencher um elemento select com opções únicas de uma propriedade.
-     * @param {HTMLElement} selectElement - O elemento select a ser preenchido.
-     * @param {Array<Object>} data - O array de dados.
-     * @param {string} property - A propriedade dos objetos a ser usada para as opções.
-     * @param {string} defaultOptionText - O texto da opção padrão.
-     */
     function populateSelectWithOptions(selectElement, data, property, defaultOptionText) {
         const uniqueValues = [...new Set(data.map(item => item[property]).filter(Boolean))].sort();
         selectElement.innerHTML = `<option value="">${defaultOptionText}</option>`;
@@ -584,29 +601,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /**
-     * Formata um número de telefone para uso em links tel: ou wa.me.
-     * @param {string} phoneStr - A string do número de telefone.
-     * @returns {string} O número de telefone formatado.
-     */
     function formatPhoneNumberForLinks(phoneStr) {
         if (!phoneStr) return '';
-        // Remove todos os caracteres que não são dígitos
         let cleaned = phoneStr.replace(/\D/g, '');
 
-        // Se o número tiver 10 ou 11 dígitos (DDD + Número), adiciona o código do Brasil (55)
         if (cleaned.length === 10 || cleaned.length === 11) {
             cleaned = '55' + cleaned;
         }
-        // Retorna o número limpo, pronto para ser usado em links `tel:` ou `https://wa.me/`
         return cleaned;
     }
 
-    /**
-     * Renderiza os resultados do dashboard na interface do usuário.
-     * @param {Object} counts - Um objeto com a contagem de agendamentos por profissional.
-     * @param {HTMLElement} container - O elemento HTML onde os resultados do dashboard serão renderizados.
-     */
     function renderDashboardResults(counts, container) {
         container.innerHTML = '';
 
